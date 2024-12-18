@@ -22,15 +22,3 @@ def create_todo(message: Annotated[str, Form()]):
     response = JSONResponse(content={"id": todo_id})
     response.headers["Location"] = location_url
     return response
-
-@app.get("/todos/{todo_id}")
-def get_todo(todo_id: str):
-    todo_path = data_dir / todo_id
-    
-    if not todo_path.exists():
-        raise HTTPException(status_code=404, detail="Todo not found")
-    
-    with todo_path.open("r") as file:
-        todo_message = file.read()
-    
-    return {"message": todo_message}

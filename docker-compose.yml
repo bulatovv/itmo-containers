@@ -1,0 +1,48 @@
+services:
+  init:
+    image: 'curlimages/curl:8.11.1'
+    command: |
+      curl -X POST http://web:2019/load -H "Content-Type: text/caddyfile" -d '
+      :80 {
+        @proxy {
+          not method GET
+          path /todos/*
+        }
+
+        file_server {
+          root /srv
+          browse /srv/template.html
+        }
+
+        reverse_proxy @proxy app:8080 {
+          @created status 201
+          handle_response @created {
+            redir * /todos
+          }
+        }
+      }'
+    depends_on:
+      - web
+
+  web:
+    image: 'caddy:2.8.4-alpine'
+    command: ["caddy", "run"]
+    environment:
+      CADDY_ADMIN: '0.0.0.0:2019'
+    ports:
+      - '80:80'
+      - '2019:2019'
+    volumes:
+      - './static:/srv'
+      - 'app_data:/srv/todos'
+  
+  app:
+    image: 'dumb-todo-app'
+    build:
+      context: .
+      dockerfile: app.Dockerfile
+    volumes:
+      - 'app_data:/app/data'
+
+volumes:
+  app_data:

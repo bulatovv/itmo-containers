@@ -42,7 +42,5 @@ COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 COPY main.py ./
 
-VOLUME /app/data
-
 # Exec форма, нормальное поведение для сигналов
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]

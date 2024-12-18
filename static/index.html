@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Todo</title>
+    <style>
+      /* Global Styles */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        padding: 20px;
+        text-align: center;
+      }
+
+      /* Container Styles */
+     .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Form Styles */
+      form {
+        padding: 20px;
+        text-align: left;
+      }
+
+      /* Input Styles */
+      textarea {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+
+      /* Button Styles */
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4CAF50;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #3e8e41;
+      }
+
+      /* Link Styles */
+      a {
+        text-decoration: none;
+        color: #4CAF50;
+      }
+
+      a:hover {
+        color: #3e8e41;
+      }
+
+      /* Dark Mode Support */
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: #333;
+          color: #fff;
+        }
+
+        textarea {
+          background-color: #666;
+          color: #fff;
+          border-color: #555;
+        }
+
+       .container {
+          background-color: #444;
+          border-color: #555;
+        }
+
+        a {
+          color: #6ecf73;
+        }
+
+        a:hover {
+          color: #8fdf94;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Todo</h1>
+      <form action="/todos/" method="post">
+        <textarea name="message" placeholder="Enter a new todo item"></textarea>
+        <button>Submit</button>
+      </form>
+      <div>
+        <a href="/todos">View Todos</a>
+      </div>
+    </div>
+  </body>
+</html>
