@@ -10,6 +10,8 @@ python = "^3.12"
 fastapi = "^0.115.6"
 python-multipart = "^0.0.19"
 uvicorn = "^0.34.0"
+httpie = "^3.2.4"
+python-slugify = "^8.0.4"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -29,6 +29,15 @@
       }
 
       /* Input Styles */
+      input {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
+
       textarea {
         width: 100%;
         padding: 10px;
@@ -69,7 +78,13 @@
           background-color: #333;
           color: #fff;
         }
-
+        
+        input {
+          background-color: #666;
+          color: #fff;
+          border-color: #555;
+        }
+          
         textarea {
           background-color: #666;
           color: #fff;
@@ -95,7 +110,8 @@
     <div class="container">
       <h1>Todo</h1>
       <form action="/todos/" method="post">
-        <textarea name="message" placeholder="Enter a new todo item"></textarea>
+        <input type="text" name="title" placeholder="Enter document name">
+        <textarea name="message" placeholder="Markdown is **supported**"></textarea>
         <button>Submit</button>
       </form>
       <div>

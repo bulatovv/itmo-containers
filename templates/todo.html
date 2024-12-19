@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.OriginalReq.URL.Path}}</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Container Styles */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+       
+              /* Link Styles */
+        a {
+          text-decoration: none;
+          color: #4CAF50;
+        }
+
+        a:hover {
+          color: #3e8e41;
+        }
+
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #333;
+                color: #fff;
+            }
+            .container {
+                background-color: #444;
+                border-color: #555;
+            }
+            a {
+              color: #6ecf73;
+            }
+
+            a:hover {
+              color: #8fdf94;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/todos">← Back to Todo List</a>
+        <h1>{{.OriginalReq.URL.Path}}</h1>
+        <article>
+            {{markdown (include (print .OriginalReq.URL.Path))}}
+        </article>
+    </div>
+</body>
+</html>
