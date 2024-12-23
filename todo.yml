@@ -1,0 +1,149 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  labels:
+    app: demo-app
+  namespace: default
+data:
+  CADDY_CONFIG: |
+    :80 {
+      bind 0.0.0.0
+
+      @proxy {
+        not method GET
+        path /todos/*
+      }
+
+      reverse_proxy @proxy app-service:8080 {
+        @created status 201
+        handle_response @created {
+          redir * /todos
+        }
+      }
+
+      file_server {
+        root /srv
+        browse /srv/templates/todos.html
+      }
+
+      @todos {
+        method GET
+        path /todos/*
+        not path /todos/
+      }
+      templates
+      rewrite @todos /templates/todo.html
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+  labels:
+    app: app-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-service
+  template:
+    metadata:
+      labels:
+        app: app-service
+    spec:
+      containers:
+        - name: app-container
+          image: dumb-todo-app:latest
+          volumeMounts:
+            - name: app-data
+              mountPath: /app/data
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          imagePullPolicy: Never
+      volumes:
+        - name: app-data
+          emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+  labels:
+    app: web-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-service
+  template:
+    metadata:
+      labels:
+        app: web-service
+    spec:
+      initContainers:
+        - name: init-container
+          image: alpine:3.18
+          env:
+            - name: CADDY_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: CADDY_CONFIG
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Writing Caddyfile configuration..."
+              echo "$CADDY_CONFIG" > /caddy-runtime/Caddyfile
+          volumeMounts:
+            - name: caddy-runtime
+              mountPath: /caddy-runtime
+      containers:
+        - name: web-container
+          image: caddy:2.8.4-alpine
+          envFrom:
+            - configMapRef:
+                name: app-config
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: caddy-runtime
+              mountPath: /etc/caddy
+            - name: static-data
+              mountPath: /srv
+      volumes:
+        - name: caddy-runtime
+          emptyDir: {}
+        - name: static-data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+  labels:
+    app: web-service
+spec:
+  type: NodePort
+  selector:
+    app: web-service
+  ports:
+    - port: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service
+spec:
+  selector:
+    app: app-service
+  ports:
+    - port: 8080
