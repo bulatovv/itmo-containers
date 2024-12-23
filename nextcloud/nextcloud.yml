@@ -49,27 +49,12 @@ spec:
           envFrom:
             - configMapRef:
                 name: nextcloud-configmap
-          env:
-            - name: POSTGRES_DB
-              valueFrom:
-                configMapKeyRef:
-                  name: postgres-configmap
-                  key: POSTGRES_DB
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: POSTGRES_USER
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-secret
-                  key: POSTGRES_PASSWORD
-            - name: NEXTCLOUD_ADMIN_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: nextcloud-secret
-                  key: NEXTCLOUD_ADMIN_PASSWORD
+            - configMapRef:
+                name: postgres-configmap
+            - secretRef:
+                name: postgres-secret
+            - secretRef:
+                name: nextcloud-secret
           imagePullPolicy: IfNotPresent
       restartPolicy: Always
       dnsPolicy: ClusterFirst
